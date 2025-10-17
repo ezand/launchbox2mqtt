@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using MqttPlugin.Launchbox.Core;
 
 namespace MqttPlugin.Core;
 
@@ -64,6 +65,7 @@ public static class Logger
         diagnostics.AppendLine($"BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
         diagnostics.AppendLine($"File Exists: {File.Exists(LogFilePath)}");
         diagnostics.AppendLine($"Init Error: {InitError ?? "None"}");
+        diagnostics.AppendLine($"MQTT Broker Connected: {MQTT.IsConnected}");
         diagnostics.AppendLine();
 
         try

@@ -1,3 +1,4 @@
+using MqttPlugin.Launchbox.Core;
 using Unbroken.LaunchBox.Plugins;
 
 namespace MqttPlugin.Core.PluginInterfaces
@@ -7,6 +8,7 @@ namespace MqttPlugin.Core.PluginInterfaces
         public void OnEventRaised(string eventType)
         {
             Logger.Info($"Event raised: {eventType}");
+            MQTT.Publish("launchbox/event", eventType);
         }
     }
 }

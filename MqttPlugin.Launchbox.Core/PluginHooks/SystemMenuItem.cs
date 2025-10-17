@@ -1,3 +1,4 @@
+using MqttPlugin.Launchbox.Core;
 using Unbroken.LaunchBox.Plugins;
 
 namespace MqttPlugin.Core.PluginInterfaces
@@ -23,6 +24,7 @@ namespace MqttPlugin.Core.PluginInterfaces
         {
             Logger.Info("MQTT Configuration menu item selected");
             Logger.ShowDiagnostics();
+            MQTT.Publish("launchbox/menuitem", "clicked");
         }
     }
 }

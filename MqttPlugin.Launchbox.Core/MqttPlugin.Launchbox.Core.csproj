@@ -7,13 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>deps\Unbroken.LaunchBox.Plugins.dll</HintPath>
     </Reference>
   </ItemGroup>
 
+  <Target Name="CopyDlls" AfterTargets="Build">
+    <ItemGroup>
+      <MQTTnetDll Include="$(NuGetPackageRoot)mqttnet\5.0.1.1416\lib\net8.0\MQTTnet.dll" />
+      <PluginDll Include="$(OutDir)$(AssemblyName).dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MQTTnetDll)" DestinationFolder="$(OutDir)MQTTPlugin"
+      SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(PluginDll)" DestinationFolder="$(OutDir)MQTTPlugin"
+      SkipUnchangedFiles="true" />
+  </Target>
 </Project>
