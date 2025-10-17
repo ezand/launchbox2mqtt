@@ -23,7 +23,7 @@ namespace MqttPlugin.Core.PluginInterfaces
         public void OnSelected()
         {
             Logger.Info("MQTT Configuration menu item selected");
-            Logger.ShowDiagnostics();
+            Logger.LogDiagnostics();
             MQTT.Publish("launchbox/menuitem", "clicked");
         }
     }

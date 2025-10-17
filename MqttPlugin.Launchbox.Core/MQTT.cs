@@ -6,29 +6,47 @@ namespace MqttPlugin.Launchbox.Core
     public static class MQTT
     {
         private static readonly IMqttClient client;
+        private static readonly MqttClientOptions clientOptions;
 
         static MQTT()
         {
             var mqttFactory = new MqttClientFactory();
             client = mqttFactory.CreateMqttClient();
 
-            var mqttClientOptions = new MqttClientOptionsBuilder()
-                .WithTcpServer("10.193.5.9", 1883)
+            clientOptions = new MqttClientOptionsBuilder()
+                .WithClientId($"launchbox2mqtt_{Guid.NewGuid()}")
+                .WithTcpServer("192.168.144.212", 1883)
                 .WithCredentials("mosquitto", "mosquitto")
                 .Build();
 
-            client.ConnectAsync(mqttClientOptions, CancellationToken.None);
+            // Fire-and-forget connection - logs errors internally
+            _ = client.ConnectAsync(clientOptions, CancellationToken.None);
         }
 
         public static bool IsConnected => client.IsConnected;
+        public static MqttClientOptions Details => clientOptions;
 
-        public static void Publish(string topic, string message)
+        public static string? GetBrokerUrl()
+        {
+            if (clientOptions.ChannelOptions is MqttClientTcpOptions tcpOptions)
+            {
+                if (tcpOptions.RemoteEndpoint is System.Net.IPEndPoint ipEndpoint)
+                {
+                    return $"tcp://{ipEndpoint.Address}:{ipEndpoint.Port}";
+                }
+                // Fallback for DnsEndPoint or other endpoint types
+                return $"tcp://{tcpOptions.RemoteEndpoint}";
+            }
+            return null;
+        }
+
+        public static void Publish(string topic, string message, bool retain = false)
         {
             if (client.IsConnected)
             {
                 try
                 {
-                    client.PublishStringAsync(topic, message);
+                    client.PublishStringAsync(topic, message, retain: retain);
                 }
                 catch (Exception ex)
                 {
