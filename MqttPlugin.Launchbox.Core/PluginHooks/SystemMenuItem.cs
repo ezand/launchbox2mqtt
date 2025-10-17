@@ -1,14 +1,17 @@
-
-using System.Diagnostics;
 using Unbroken.LaunchBox.Plugins;
 
 namespace MqttPlugin.Core.PluginInterfaces
 {
     public class SystemMenuItem : ISystemMenuItemPlugin
     {
-        public string Caption => "MQTT Plugin - YAY!";
+        public SystemMenuItem()
+        {
+            Logger.Info("SystemMenuItem constructor called");
+        }
 
-        public System.Drawing.Image IconImage => null;
+        public string Caption => "MQTT configuration";
+
+        public System.Drawing.Image? IconImage => null;
 
         public bool ShowInLaunchBox => true;
 
@@ -18,7 +21,8 @@ namespace MqttPlugin.Core.PluginInterfaces
 
         public void OnSelected()
         {
-            Debug.WriteLine("YAY!");
+            Logger.Info("MQTT Configuration menu item selected");
+            Logger.ShowDiagnostics();
         }
     }
 }
