@@ -9,8 +9,7 @@
 
 # launchbox2mqtt
 
-A LaunchBox plugin that bridges LaunchBox events to MQTT, enabling real-time monitoring and automation of retro
-gaming sessions.
+A LaunchBox plugin that bridges LaunchBox events to MQTT, enabling real-time monitoring and automation of retro gaming sessions. Companion to [retro2mqtt](https://github.com/ezand/retro2mqtt) for complete frontend-to-emulator observability.
 
 ## Features
 
@@ -21,6 +20,39 @@ gaming sessions.
 - **Configuration UI**: Easy-to-use dialog for MQTT broker settings
 - **Secure Credentials**: Password encryption using Windows DPAPI
 - **Debug Logging**: File-based logging to `<LaunchBox>/Logs/launchbox-mqtt-debug.log`
+
+## Related Projects
+
+### retro2mqtt Integration
+
+This plugin is a companion to [**retro2mqtt**](https://github.com/ezand/retro2mqtt), which monitors RetroArch emulator internals and provides Home Assistant integration via MQTT Discovery.
+
+**Why use both together?**
+
+- **launchbox2mqtt** tracks **frontend events**: game launches, LaunchBox state, and game metadata
+- **retro2mqtt** monitors **emulator internals**: RetroArch core activity, savestate events, and real-time gameplay
+- **Together** they provide complete visibility into your gaming sessions from frontend to emulator
+
+**Benefits of combining:**
+
+1. **Home Assistant Integration**: retro2mqtt provides MQTT Discovery for automatic entity creation in Home Assistant
+2. **Advanced Automations**: Trigger actions based on both frontend (LaunchBox) and emulator (RetroArch) events
+3. **Complete Session Tracking**: Track which frontend launched what game using which emulator core
+4. **Rich Automation Scenarios**:
+   - LaunchBox launches game → retro2mqtt detects RetroArch core → Home Assistant dims room lights
+   - Track total play time across frontend and emulator
+   - Discord rich presence showing game from LaunchBox + core from RetroArch
+   - Separate metrics for frontend usage vs actual gameplay time
+
+**Architecture:**
+
+```
+LaunchBox → launchbox2mqtt → MQTT Broker ← retro2mqtt ← RetroArch
+                                    ↓
+                            Home Assistant
+```
+
+Both projects can be used independently, but combining them unlocks powerful automation possibilities.
 
 ## MQTT Topics
 
