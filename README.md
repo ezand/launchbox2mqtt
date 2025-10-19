@@ -15,23 +15,45 @@ gaming sessions.
 ## Features
 
 - **Game Lifecycle Events**: Publishes MQTT messages when games are launched, running, and exited
-- **System Events**: Monitors LaunchBox system events and forwards them to MQTT
-- **Game Metadata**: Publishes detailed game information including title, platform, emulator details
+- **Emulator Events**: Tracks emulator loading and execution state
+- **System Events**: Monitors LaunchBox and BigBox state changes
+- **Game Metadata**: Publishes detailed game and emulator information as JSON
+- **Configuration UI**: Easy-to-use dialog for MQTT broker settings
+- **Secure Credentials**: Password encryption using Windows DPAPI
 - **Debug Logging**: File-based logging to `<LaunchBox>/Logs/launchbox-mqtt-debug.log`
-- **Configuration Menu**: Access MQTT diagnostics via LaunchBox Tools menu
 
 ## MQTT Topics
 
 The plugin publishes to the following topics:
 
-| Topic                        | Payload    | Description                                |
-| ---------------------------- | ---------- | ------------------------------------------ |
-| `launchbox/game/launching`   | `on`/`off` | Game is being launched                     |
-| `launchbox/game/launched`    | `on`       | Game has started                           |
-| `launchbox/game/exited`      | `on`       | Game has closed                            |
-| `launchbox/game/details`     | JSON       | Full game metadata (title, platform, etc.) |
-| `launchbox/app/details`      | JSON       | Additional application metadata            |
-| `launchbox/emulator/details` | JSON       | Emulator configuration details             |
+### Game/Content Events
+
+| Topic                           | Payload    | Retained | Description                       |
+| ------------------------------- | ---------- | -------- | --------------------------------- |
+| `launchbox/content/loaded`      | `on`/`off` | No       | Content (game) is loaded          |
+| `launchbox/content/running`     | `on`/`off` | No       | Content is currently running      |
+| `launchbox/content`             | Game title | No       | Currently loaded game title       |
+| `launchbox/content/last_played` | Game title | Yes      | Last played game title (retained) |
+| `launchbox/content/details`     | JSON       | Yes      | Full game metadata (retained)     |
+
+### Emulator Events
+
+| Topic                            | Payload        | Retained | Description                               |
+| -------------------------------- | -------------- | -------- | ----------------------------------------- |
+| `launchbox/emulator/loaded`      | `on`/`off`     | No       | Emulator is loaded                        |
+| `launchbox/emulator/running`     | `on`/`off`     | No       | Emulator is currently running             |
+| `launchbox/emulator`             | Emulator title | No       | Currently loaded emulator                 |
+| `launchbox/emulator/last_loaded` | Emulator title | Yes      | Last loaded emulator (retained)           |
+| `launchbox/emulator/details`     | JSON           | Yes      | Emulator configuration details (retained) |
+
+### System Events
+
+| Topic                      | Payload    | Retained | Description                    |
+| -------------------------- | ---------- | -------- | ------------------------------ |
+| `launchbox/running`        | `on`/`off` | No       | LaunchBox application state    |
+| `launchbox/bigbox/running` | `on`/`off` | No       | BigBox mode state              |
+| `launchbox/bigbox/locked`  | `on`/`off` | No       | BigBox locked state            |
+| `launchbox/system/event`   | Event name | No       | Other system events (fallback) |
 
 ## Installation
 
@@ -58,22 +80,60 @@ cd launchbox2mqtt
 dotnet build -c Release
 
 # The plugin files will be in:
-# MqttPlugin.Launchbox.Core/bin/Release/net9.0/MQTTPlugin/
+# MqttPlugin.Launchbox.Core/bin/Release/net9.0-windows/MQTTPlugin/
 ```
+
+**macOS/Linux Build:**
+
+The project targets Windows-specific APIs but can be built on macOS/Linux:
+
+```bash
+dotnet build -c Release
+```
+
+The `EnableWindowsTargeting` property allows cross-platform builds. The resulting DLL will only run on Windows.
 
 **Install:**
 
 1. Copy the entire `MQTTPlugin` folder to `<LaunchBox Installation>/Plugins/`
 2. Restart LaunchBox
-3. Verify installation by checking `Tools > MQTT configuration` menu
+3. Verify installation by checking `Tools > MQTT Configuration` menu item
 
 ## Configuration
 
-> 🔧 **Planned**: Configuration UI for broker settings without rebuilding
+### MQTT Broker Settings
 
-### Build errors on macOS/Linux
+Configure your MQTT broker connection via the LaunchBox GUI:
 
-The project targets Windows-specific APIs. Use GitHub Actions or build on Windows.
+1. Open LaunchBox
+2. Navigate to `Tools > MQTT Configuration` menu item
+3. Click to open the configuration dialog
+4. Enter your MQTT broker details:
+   - **Host**: MQTT broker hostname or IP address (default: `localhost`)
+   - **Port**: MQTT broker port (default: `1883`)
+   - **Username**: Optional authentication username
+   - **Password**: Optional authentication password
+5. Click **Test Connection** to verify settings
+6. Click **Save** to apply changes
+
+**Security:**
+
+- Passwords are encrypted using Windows DPAPI (Data Protection API)
+- Encryption is user-scoped and machine-scoped
+- Config stored in `<LaunchBox>/Plugins/MQTTPlugin/config.json`
+- The MQTT connection automatically reconnects after saving new settings
+
+**Default Configuration:**
+
+If no configuration file exists, the plugin uses these defaults:
+
+- Host: `localhost`
+- Port: `1883`
+- No authentication
+
+### First Run
+
+On first run without a config file, the plugin will log a warning and use default settings. Access the configuration dialog to set up your broker connection.
 
 ## Dependencies
 
