@@ -28,6 +28,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MQTTPlugin-${{ github.sha }}
-          path: MqttPlugin.Launchbox.Core/bin/Release/net9.0/MQTTPlugin/
+          path: MqttPlugin.Launchbox.Core/bin/Release/net9.0-windows/MQTTPlugin/
           if-no-files-found: error
           retention-days: 90
