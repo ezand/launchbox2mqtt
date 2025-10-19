@@ -1,34 +1,101 @@
 ﻿using MQTTnet;
 using MqttPlugin.Core;
+using MqttPlugin.Launchbox.Core.Services;
+using Unbroken.LaunchBox.Plugins;
 
 namespace MqttPlugin.Launchbox.Core
 {
     public static class MQTT
     {
-        private static readonly IMqttClient client;
-        private static readonly MqttClientOptions clientOptions;
+        private static IMqttClient? client;
+        private static MqttClientOptions? clientOptions;
+        private static readonly object lockObject = new();
 
-        static MQTT()
+        private static void EnsureInitialized()
         {
-            var mqttFactory = new MqttClientFactory();
-            client = mqttFactory.CreateMqttClient();
+            if (client != null)
+                return;
 
-            clientOptions = new MqttClientOptionsBuilder()
-                .WithClientId($"launchbox2mqtt_{Guid.NewGuid()}")
-                .WithTcpServer("192.168.144.212", 1883)
-                .WithCredentials("mosquitto", "mosquitto")
-                .Build();
+            lock (lockObject)
+            {
+                if (client != null)
+                    return;
 
-            // Fire-and-forget connection - logs errors internally
-            _ = client.ConnectAsync(clientOptions, CancellationToken.None);
+                var config = ConfigManager.LoadConfig();
+                var mqttFactory = new MqttClientFactory();
+                client = mqttFactory.CreateMqttClient();
+
+                var optionsBuilder = new MqttClientOptionsBuilder()
+                    .WithClientId($"launchbox2mqtt_{Guid.NewGuid()}")
+                    .WithTcpServer(config.Host, config.Port);
+
+                if (!string.IsNullOrWhiteSpace(config.Username))
+                {
+                    var password = ConfigManager.DecryptPassword(config.EncryptedPassword);
+                    optionsBuilder.WithCredentials(config.Username, password);
+                }
+
+                clientOptions = optionsBuilder.Build();
+
+                // Fire-and-forget connection - logs errors internally
+                _ = ConnectAsync();
+            }
         }
 
-        public static bool IsConnected => client.IsConnected;
-        public static MqttClientOptions Details => clientOptions;
+        private static async Task ConnectAsync()
+        {
+            if (client == null || clientOptions == null)
+                return;
+
+            try
+            {
+                await client.ConnectAsync(clientOptions, CancellationToken.None);
+                Logger.Info("Connected to MQTT broker");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to connect to MQTT broker: {ex.Message}");
+            }
+        }
+
+        public static void ReloadConfig()
+        {
+            lock (lockObject)
+            {
+                if (client != null && client.IsConnected)
+                {
+                    _ = client.DisconnectAsync();
+                }
+
+                client = null;
+                clientOptions = null;
+
+                EnsureInitialized();
+            }
+        }
+
+        public static bool IsConnected
+        {
+            get
+            {
+                EnsureInitialized();
+                return client?.IsConnected ?? false;
+            }
+        }
+
+        public static MqttClientOptions? Details
+        {
+            get
+            {
+                EnsureInitialized();
+                return clientOptions;
+            }
+        }
 
         public static string? GetBrokerUrl()
         {
-            if (clientOptions.ChannelOptions is MqttClientTcpOptions tcpOptions)
+            EnsureInitialized();
+            if (clientOptions?.ChannelOptions is MqttClientTcpOptions tcpOptions)
             {
                 if (tcpOptions.RemoteEndpoint is System.Net.IPEndPoint ipEndpoint)
                 {
@@ -42,7 +109,8 @@ namespace MqttPlugin.Launchbox.Core
 
         public static void Publish(string topic, string message, bool retain = false)
         {
-            if (client.IsConnected)
+            EnsureInitialized();
+            if (client?.IsConnected == true)
             {
                 try
                 {
