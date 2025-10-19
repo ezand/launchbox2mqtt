@@ -2,6 +2,7 @@ using MqttPlugin.Launchbox.Core;
 using Unbroken.LaunchBox.Plugins;
 using Unbroken.LaunchBox.Plugins.Data;
 
+// TODO publish LaunchBox system details to launchbox/details
 namespace MqttPlugin.Core.PluginInterfaces
 {
     public class SystemEvents : ISystemEventsPlugin

@@ -9,7 +9,7 @@
 
 # launchbox2mqtt
 
-A LaunchBox plugin that bridges LaunchBox events to MQTT, enabling real-time monitoring and automation of retro gaming sessions. Companion to [retro2mqtt](https://github.com/ezand/retro2mqtt) for complete frontend-to-emulator observability.
+A [LaunchBox](https://www.launchbox-app.com/) plugin that bridges LaunchBox events to [MQTT](https://mqtt.org/), enabling real-time monitoring and automation of retro gaming sessions. Companion to [retro2mqtt](https://github.com/ezand/retro2mqtt) for complete frontend-to-emulator observability.
 
 ## Features
 
@@ -35,8 +35,8 @@ This plugin is a companion to [**retro2mqtt**](https://github.com/ezand/retro2mq
 
 **Benefits of combining:**
 
-1. **Home Assistant Integration**: retro2mqtt provides MQTT Discovery for automatic entity creation in Home Assistant
-2. **Advanced Automations**: Trigger actions based on both frontend (LaunchBox) and emulator (RetroArch) events
+1. **Home Assistant Integration**: retro2mqtt provides MQTT Discovery for automatic entity creation in [Home Assistant](https://www.home-assistant.io/)
+2. **Advanced Automations**: Trigger actions based on both frontend (LaunchBox) and emulator ([RetroArch](https://www.retroarch.com/)) events
 3. **Complete Session Tracking**: Track which frontend launched what game using which emulator core
 4. **Rich Automation Scenarios**:
    - LaunchBox launches game → retro2mqtt detects RetroArch core → Home Assistant dims room lights
