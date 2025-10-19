@@ -18,6 +18,11 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="resources\mqtt.png" />
+    <EmbeddedResource Include="resources\launchbox2mqtt_banner.png" />
+  </ItemGroup>
+
   <Target Name="CopyDlls" AfterTargets="Build">
     <ItemGroup>
       <MQTTnetDll Include="$(NuGetPackageRoot)mqttnet\5.0.1.1416\lib\net8.0\MQTTnet.dll" />

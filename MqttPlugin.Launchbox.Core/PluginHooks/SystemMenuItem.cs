@@ -1,3 +1,5 @@
+using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using MqttPlugin.Launchbox.Core;
 using MqttPlugin.Launchbox.Core.Services;
@@ -8,9 +10,12 @@ namespace MqttPlugin.Core.PluginInterfaces
 {
     public class SystemMenuItem : ISystemMenuItemPlugin
     {
+        private Image? _iconImage;
+
         public SystemMenuItem()
         {
             Logger.Info("SystemMenuItem constructor called");
+            LoadIcon();
         }
 
         public string Caption
@@ -21,7 +26,31 @@ namespace MqttPlugin.Core.PluginInterfaces
             }
         }
 
-        public Image? IconImage => null;
+        public Image? IconImage => _iconImage;
+
+        private void LoadIcon()
+        {
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "MqttPlugin.Launchbox.Core.resources.mqtt.png";
+
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    _iconImage = Image.FromStream(stream);
+                    Logger.Info($"Loaded menu icon from embedded resource: {resourceName}");
+                }
+                else
+                {
+                    Logger.Info($"Embedded resource not found: {resourceName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to load menu icon: {ex.Message}", ex);
+            }
+        }
 
         public bool ShowInLaunchBox => true;
 
