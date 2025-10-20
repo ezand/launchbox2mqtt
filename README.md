@@ -90,47 +90,11 @@ The plugin publishes to the following topics:
 
 ## Installation
 
-### Option 1: Download Pre-built Release
-
 1. Download the latest `MQTTPlugin-*.zip` artifact from [GitHub Actions](https://github.com/ezand/launchbox2mqtt/actions)
 2. Extract the contents to `<LaunchBox Installation>/Plugins/MQTTPlugin/`
 3. Restart LaunchBox
 
-### Option 2: Build from Source
-
-**Prerequisites:**
-
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-
-**Build Steps:**
-
-```bash
-# Clone the repository
-git clone https://github.com/ezand/launchbox2mqtt.git
-cd launchbox2mqtt
-
-# Build in Release mode
-dotnet build -c Release
-
-# The plugin files will be in:
-# MqttPlugin.Launchbox.Core/bin/Release/net9.0-windows/MQTTPlugin/
-```
-
-**macOS/Linux Build:**
-
-The project targets Windows-specific APIs but can be built on macOS/Linux:
-
-```bash
-dotnet build -c Release
-```
-
-The `EnableWindowsTargeting` property allows cross-platform builds. The resulting DLL will only run on Windows.
-
-**Install:**
-
-1. Copy the entire `MQTTPlugin` folder to `<LaunchBox Installation>/Plugins/`
-2. Restart LaunchBox
-3. Verify installation by checking `Tools > MQTT Configuration` menu item
+For building from source, see [Development Guide](docs/development.md).
 
 ## Configuration
 
@@ -167,10 +131,6 @@ If no configuration file exists, the plugin uses these defaults:
 ### First Run
 
 On first run without a config file, the plugin will log a warning and use default settings. Access the configuration dialog to set up your broker connection.
-
-## Dependencies
-
-- [MQTTnet 5.0.1.1416](https://github.com/dotnet/MQTTnet) - MQTT client library
 
 ## 📃 License
 
