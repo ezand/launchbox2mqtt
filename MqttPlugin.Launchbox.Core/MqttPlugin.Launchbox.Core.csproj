@@ -16,6 +16,10 @@
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>deps\Unbroken.LaunchBox.Plugins.dll</HintPath>
     </Reference>
+    <Reference
+      Include="Unbroken.LaunchBox">
+      <HintPath>deps\Unbroken.LaunchBox.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -60,13 +60,14 @@ The plugin publishes to the following topics:
 
 ### Game/Content Events
 
-| Topic                           | Payload    | Retained | Description                       |
-| ------------------------------- | ---------- | -------- | --------------------------------- |
-| `launchbox/content/loaded`      | `on`/`off` | No       | Content (game) is loaded          |
-| `launchbox/content/running`     | `on`/`off` | No       | Content is currently running      |
-| `launchbox/content`             | Game title | No       | Currently loaded game title       |
-| `launchbox/content/last_played` | Game title | Yes      | Last played game title (retained) |
-| `launchbox/content/details`     | JSON       | Yes      | Full game metadata (retained)     |
+| Topic                           | Payload    | Retained | Description                            |
+| ------------------------------- | ---------- | -------- | -------------------------------------- |
+| `launchbox/details`             | JSON       | Yes      | LaunchBox details like version and id. |
+| `launchbox/content/loaded`      | `on`/`off` | No       | Content (game) is loaded               |
+| `launchbox/content/running`     | `on`/`off` | No       | Content is currently running           |
+| `launchbox/content`             | Game title | No       | Currently loaded game title            |
+| `launchbox/content/last_played` | Game title | Yes      | Last played game title (retained)      |
+| `launchbox/content/details`     | JSON       | Yes      | Full game metadata (retained)          |
 
 ### Emulator Events
 

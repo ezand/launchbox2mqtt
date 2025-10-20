@@ -1,8 +1,8 @@
 using MqttPlugin.Launchbox.Core;
 using Unbroken.LaunchBox.Plugins;
 using Unbroken.LaunchBox.Plugins.Data;
+using System.Text.Json;
 
-// TODO publish LaunchBox system details to launchbox/details
 namespace MqttPlugin.Core.PluginInterfaces
 {
     public class SystemEvents : ISystemEventsPlugin
@@ -14,6 +14,11 @@ namespace MqttPlugin.Core.PluginInterfaces
             {
                 case SystemEventTypes.LaunchBoxStartupCompleted:
                     MQTT.Publish("launchbox/running", "on");
+                    MQTT.Publish("launchbox/details", JsonSerializer.Serialize(new Dictionary<string, string> {
+                        { "version", Unbroken.LaunchBox.State.Version },
+                        { "id", Unbroken.LaunchBox.State.Id.ToString() },
+                        { "machineId", Unbroken.LaunchBox.State.MachineId },
+                    }), true);
                     break;
                 case SystemEventTypes.BigBoxStartupCompleted:
                     MQTT.Publish("launchbox/bigbox/running", "on");

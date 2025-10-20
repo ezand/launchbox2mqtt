@@ -26,7 +26,7 @@ namespace MqttPlugin.Launchbox.Core
                 client = mqttFactory.CreateMqttClient();
 
                 var optionsBuilder = new MqttClientOptionsBuilder()
-                    .WithClientId($"launchbox2mqtt_{Guid.NewGuid()}")
+                    .WithClientId($"launchbox2mqtt_{Unbroken.LaunchBox.State.MachineId}")
                     .WithTcpServer(config.Host, config.Port);
 
                 if (!string.IsNullOrWhiteSpace(config.Username))
