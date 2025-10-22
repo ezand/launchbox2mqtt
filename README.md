@@ -90,7 +90,7 @@ The plugin publishes to the following topics:
 
 ## Installation
 
-1. Download the latest `MQTTPlugin-*.zip` artifact from [GitHub Actions](https://github.com/ezand/launchbox2mqtt/actions)
+1. Download the latest `launchbox2mqtt-*.zip` from [GitHub Releases](https://github.com/ezand/launchbox2mqtt/releases)
 2. Extract the contents to `<LaunchBox Installation>/Plugins/MQTTPlugin/`
 3. Restart LaunchBox
 
